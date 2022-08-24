@@ -11,38 +11,34 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-##%%
+
 from time import sleep
-from traceback import print_tb
 
 import rclpy
 
-#from std_msgs.msg import String
-from geometry_msgs.msg import Pose
+from std_msgs.msg import String
 
 # We do not recommend this style as ROS 2 provides timers for this purpose,
 # and it is recommended that all nodes call a variation of spin.
 # This example is only included for completeness because it is similar to examples in ROS 1.
 # For periodic publication please see the other examples using timers.
 
-target_pose = Pose()
-##%%
+
 def main(args=None):
     rclpy.init(args=args)
 
     node = rclpy.create_node('minimal_publisher')
 
-    publisher = node.create_publisher(Pose, 'topic', 10)
+    publisher = node.create_publisher(String, 'topic', 10)
 
-    
-    
+    msg = String()
+
+    i = 0
     while rclpy.ok():
-        # target_pose.position = (target_pose.position.x, target_pose.position.y, target_pose.position.z)
-        node.get_logger().info('x: "%s"' % target_pose.position.x)
-        node.get_logger().info('y: "%s"' % target_pose.position.y)
-        node.get_logger().info('z: "%s"' % target_pose.position.z)
-        publisher.publish(target_pose)
-        #print(target_pose.position.x, target_pose.position.y, target_pose.position.z)
+        msg.data = 'Hello World: %d' % i
+        i += 1
+        node.get_logger().info('Publishing: "%s"' % msg.data)
+        publisher.publish(msg)
         sleep(0.5)  # seconds
 
     # Destroy the node explicitly
@@ -51,18 +47,6 @@ def main(args=None):
     node.destroy_node()
     rclpy.shutdown()
 
-x_coord = -0.5
-y_coord = -0.6
-z_coord = 0.1
-
-xyz_robot = [x_coord, y_coord, z_coord]
-#print(xyz_robot[1])
-
-target_pose.position.x = xyz_robot[0]
-target_pose.position.y = xyz_robot[1]
-target_pose.position.z = xyz_robot[2]
 
 if __name__ == '__main__':
     main()
-
-## %%
